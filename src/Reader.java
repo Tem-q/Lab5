@@ -5,6 +5,11 @@ import java.io.*;
 public class Reader {
     File fileWay;
     boolean checkEnvironmentVariable = true;
+
+    /**
+     * Method sets the path to the file
+     * @param fileName
+     */
     public void setFileWay(String fileName) {
         fileWay = new File(fileName);
         checkEnvironmentVariable = false;
