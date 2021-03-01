@@ -3,14 +3,23 @@ import java.io.*;
  * Class for reading from a file
  */
 public class Reader {
-    File fileWay = new File(System.getenv("enV"));
+    File fileWay;
+    boolean checkEnvironmentVariable = true;
+    public void setFileWay(String fileName) {
+        fileWay = new File(fileName);
+        checkEnvironmentVariable = false;
+    }
     /**
      * Method reads a collection from a file
      * @param dragonCollection
      * @throws IOException
      */
     public void readFile(DragonCollection dragonCollection) throws IOException {
+        if (checkEnvironmentVariable) {
+            fileWay = new File(System.getenv("enV"));
+        }
         BufferedReader bufferedReader = new BufferedReader(new FileReader(fileWay));
+
 
         String[] words;
         String line;

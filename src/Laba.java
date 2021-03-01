@@ -14,15 +14,24 @@ public class Laba {
         help();
         DragonCollection dragonCollection = new DragonCollection();
 
-        Reader myReader = new Reader();
+        Reader reader = new Reader();
         try {
-            myReader.readFile(dragonCollection);
+            try {
+                reader.readFile(dragonCollection);
+            } catch (NullPointerException e) {
+                System.out.println("Enter the name of file");
+                String fileName = scanner.nextLine();
+                reader.setFileWay(fileName);
+                reader.readFile(dragonCollection);
+            }
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-        } catch (IOException e) {
+        }  catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
+
+        System.out.println("Enter the command please");
         boolean param = true;
         try {
             String task = scanner.nextLine();
@@ -162,7 +171,7 @@ public class Laba {
      * Method prints the legend
      */
     public static void help() {
-        System.out.println("Enter a command from the list: \n"
+        System.out.println("List of available commands: \n"
                 + "help: display help for available commands \n"
                 + "info: display information about the collection \n"
                 + "show: display all the elements of the collection \n"
