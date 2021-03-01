@@ -1,0 +1,5 @@
+info
+remove_by_id
+head
+exit
+show
