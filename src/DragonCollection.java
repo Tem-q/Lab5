@@ -286,7 +286,6 @@ public class DragonCollection {
      * Method saves the collection to a file
      */
     public void save() {
-        //Writer writer = new Writer();
         try {
             Writer writer = new Writer();
             writer.clearFile();
@@ -316,13 +315,8 @@ public class DragonCollection {
         String line;
         boolean checkExit = true;
         try {
-            //String[] parametrs = new String[]{"",""};
-            //String task = sc.nextLine();
-            //parametrs = checkTask(task, parametrs);
-            //task = parametrs[0];
             while ((((line = bufferedReader.readLine()) != null)) && (checkExit)) {
                 String[] parametrs = new String[]{"",""};
-                //String task = sc.nextLine();
                 parametrs = checkTask(line, parametrs);
                 line = parametrs[0];
                 switch (line) {
@@ -474,6 +468,8 @@ public class DragonCollection {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println("No such file or directory");
         }
         return checkExit;
     }
