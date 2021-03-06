@@ -26,16 +26,20 @@ public class Laba {
             }
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-        }  catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (NoSuchElementException e) {
+            System.out.println("Unknown command");
         }
 
 
         System.out.println("Enter the command please");
         boolean param = true;
         try {
+            String[] parametrs = new String[]{"",""};
             String task = scanner.nextLine();
-            task = task.replaceAll("\\s*", "");
+            parametrs = dragonCollection.checkTask(task, parametrs);
+            task = parametrs[0];
             while (param) {
                 switch (task) {
                     case "help":
@@ -46,45 +50,56 @@ public class Laba {
                         break;
                     case "show":
                         dragonCollection.show();
+                        if (dragonCollection.collectionSize() == 0) {
+                            System.out.println("Collection is empty");
+                        }
                         break;
                     case "add":
                         dragonCollection.add(scanner, "add", 0);
                         break;
                     case "update":
-                        System.out.println("Enter the id to update the element");
-                        int updateId = 0;
-                        while (true) {
-                            try {
-                                updateId = scanner.nextInt();
-                                if (dragonCollection.checkIdForExistence(updateId)) {
-                                    dragonCollection.removeById(updateId);
-                                    dragonCollection.add(scanner, "update", updateId);
-                                    break;
-                                } else {
-                                    System.out.println("There is no dragon with this id in the collection");
+                        if (dragonCollection.collectionSize() > 0) {
+                            System.out.println("Enter the id to update the element. The id must be int type");
+                            int updateId = 0;
+                            while (true) {
+                                try {
+                                    updateId = scanner.nextInt();
+                                    if (dragonCollection.checkIdForExistence(updateId)) {
+                                        dragonCollection.removeById(updateId);
+                                        dragonCollection.add(scanner, "update", updateId);
+                                        break;
+                                    } else {
+                                        System.out.println("There is no dragon with this id in the collection");
+                                        scanner.nextLine();
+                                        break;
+                                    }
+                                } catch (InputMismatchException e) {
+                                    System.out.println("The id must be int type. Try again");
                                     scanner.nextLine();
-                                    break;
                                 }
-                            } catch (InputMismatchException e) {
-                                System.out.println("The id must be int type. Try again");
-                                scanner.nextLine();
                             }
+                        } else {
+                            System.out.println("Collection is empty");
                         }
                         break;
                     case "remove_by_id":
                         if (dragonCollection.collectionSize() > 0) {
-                            System.out.println("Enter the id of dragon");
+                            System.out.println("Enter the id of dragon. The id must be int type");
                             int id = 0;
                             while (true) {
                                 if (scanner.hasNextInt()) {
                                     id = scanner.nextInt();
                                     break;
                                 } else {
-                                    System.out.println("The id must be int type. try again");
+                                    System.out.println("The id must be int type. Try again");
                                     scanner.nextLine();
                                 }
                             }
-                            dragonCollection.removeById(id);
+                            if (dragonCollection.checkIdForExistence(id)) {
+                                dragonCollection.removeById(id);
+                            } else {
+                                System.out.println("There is no dragon with this id in the collection");
+                            }
                             scanner.nextLine();
                         } else {
                             System.out.println("Collection is already empty");
@@ -97,9 +112,7 @@ public class Laba {
                         dragonCollection.save();
                         break;
                     case "execute_script":
-                        System.out.println("Enter the file name");
-                        String fileName = scanner.nextLine();
-                        param = dragonCollection.executeScript(fileName);
+                        param = dragonCollection.executeScript(parametrs[1]);
                         break;
                     case "exit":
                         param = false;
@@ -111,7 +124,7 @@ public class Laba {
                         dragonCollection.removeHead();
                         break;
                     case "add_if_max":
-                        System.out.println("Enter the weight to add the element");
+                        System.out.println("Enter the weight to add the element. The weight must be int type");
                         int addIfMaxWeight = 0;
                         while (true) {
                             try {
@@ -131,27 +144,39 @@ public class Laba {
                         }
                         break;
                     case "sum_of_age":
-                        dragonCollection.sumOfAge();
+                        if (dragonCollection.collectionSize() > 0) {
+                            dragonCollection.sumOfAge();
+                        } else {
+                            System.out.println("Collection is empty");
+                        }
                         break;
                     case "filter_contains_name":
-                        System.out.println("Please enter the name");
-                        String name = scanner.nextLine();
-                        dragonCollection.filterContainsName(name);
+                        if (dragonCollection.collectionSize() > 0) {
+                            System.out.println("Please enter the name");
+                            String name = scanner.nextLine();
+                            dragonCollection.filterContainsName(name);
+                        } else {
+                            System.out.println("Collection is empty");
+                        }
                         break;
                     case "filter_less_than_age":
-                        System.out.println("Please enter the age");
-                        long age = 0;
-                        while (true) {
-                            if (scanner.hasNextLong()) {
-                                age = scanner.nextLong();
-                                break;
-                            } else {
-                                System.out.println("The age must be long type. try again");
-                                scanner.nextLine();
+                        if (dragonCollection.collectionSize() > 0) {
+                            System.out.println("Please enter the age. The age must be long type");
+                            long age = 0;
+                            while (true) {
+                                if (scanner.hasNextLong()) {
+                                    age = scanner.nextLong();
+                                    break;
+                                } else {
+                                    System.out.println("The age must be long type. try again");
+                                    scanner.nextLine();
+                                }
                             }
+                            dragonCollection.filterLessThanAge(age);
+                            scanner.nextLine();
+                        } else {
+                            System.out.println("Collection is empty");
                         }
-                        dragonCollection.filterLessThanAge(age);
-                        scanner.nextLine();
                         break;
                     default:
                         System.out.println("Unknown command. Please try again");
@@ -159,12 +184,13 @@ public class Laba {
                 if (param) {
                     System.out.println("Enter a command please");
                     task = scanner.nextLine();
+                    parametrs = dragonCollection.checkTask(task, parametrs);
+                    task = parametrs[0];
                 }
             }
         } catch (NoSuchElementException e) {
-            System.out.println("Unknown command");
+            System.exit(0);
         }
-
     }
 
     /**

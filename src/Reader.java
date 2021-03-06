@@ -120,11 +120,17 @@ public class Reader {
                             System.out.println("The weight must be greater than 0");
                             break;
                         }
-                        type = DragonType.valueOf(words[6]);
+                        try {
+                            type = DragonType.valueOf(words[6]);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("The dragon type specified in the file does not exist");
+                        }
 
-                        dragon = new Dragon(name, coordinates, age, description, weight, type, killer);
+                        if (type != null) {
+                            dragon = new Dragon(name, coordinates, age, description, weight, type, killer);
+                            dragonCollection.addFromReader(dragon);
+                        }
 
-                        dragonCollection.addFromReader(dragon);
                         break;
                     }
                 } catch (NumberFormatException e) {

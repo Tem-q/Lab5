@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -67,7 +68,7 @@ public class DragonCollection {
         int dragonWeight = 0;
         DragonType dragonType = null;
 
-        System.out.println("Enter the x coordinate");
+        System.out.println("Enter the x coordinate. The x coordinate must be long type");
         while (true) {
             try {
                 xcor = scanner.nextLong();
@@ -78,7 +79,7 @@ public class DragonCollection {
             }
         }
 
-        System.out.println("Enter the y coordinate");
+        System.out.println("Enter the y coordinate. The y coordinate must be double type and less than or equal to 67");
         while (true) {
             try {
                 double ycheck = scanner.nextDouble();
@@ -96,7 +97,7 @@ public class DragonCollection {
         }
         Coordinates coordinates = new Coordinates(xcor, ycor);
 
-        System.out.println("Enter the x location coordinate");
+        System.out.println("Enter the x location coordinate. The x location coordinate must be float type");
         while (true) {
             try {
                 x = scanner.nextFloat();
@@ -106,7 +107,7 @@ public class DragonCollection {
                 scanner.nextLine();
             }
         }
-        System.out.println("Enter the y location coordinate");
+        System.out.println("Enter the y location coordinate. The y location coordinate must be int type");
         while (true) {
             try {
                 y = scanner.nextInt();
@@ -116,7 +117,7 @@ public class DragonCollection {
                 scanner.nextLine();
             }
         }
-        System.out.println("Enter the z location coordinate");
+        System.out.println("Enter the z location coordinate. The z location coordinate must be float type");
         while (true) {
             try {
                 z = scanner.nextFloat();
@@ -127,7 +128,7 @@ public class DragonCollection {
             }
         }
         scanner.nextLine();
-        System.out.println("Enter the name of location");
+        System.out.println("Enter the name of location. The name of location can't be null or empty");
         while (true) {
             String checkEmpty = scanner.nextLine();
             if(!checkEmpty.equals("")) {
@@ -139,7 +140,7 @@ public class DragonCollection {
         }
         Location location = new Location(x, y, z, nameLocation);
 
-        System.out.println("Enter the name of killer");
+        System.out.println("Enter the name of killer. The name of killer can't be null or empty");
         while (true) {
             String checkEmpty = scanner.nextLine();
             if(!checkEmpty.equals("")) {
@@ -149,7 +150,7 @@ public class DragonCollection {
                 System.out.println("The name of killer can't be null or empty. Try again");
             }
         }
-        System.out.println("Enter the height of killer");
+        System.out.println("Enter the height of killer. The height of killer must be float type and greater than 0");
         while (true) {
             try {
                 float personHeightCheck = scanner.nextFloat();
@@ -165,7 +166,7 @@ public class DragonCollection {
                 scanner.nextLine();
             }
         }
-        System.out.println("Enter the weight of killer");
+        System.out.println("Enter the weight of killer. The weight of killer must be long type and greater than 0");
         while (true) {
             try {
                 long personWeightCheck = scanner.nextLong();
@@ -184,7 +185,7 @@ public class DragonCollection {
         Person killer = new Person(personName, personHeight, personWeight, location);
 
         scanner.nextLine();
-        System.out.println("Enter the name of dragon");
+        System.out.println("Enter the name of dragon. The name of dragon can't be null or empty");
         while (true) {
             String checkEmpty = scanner.nextLine();
             if(!checkEmpty.equals("")) {
@@ -194,7 +195,7 @@ public class DragonCollection {
                 System.out.println("The name of dragon can't be null or empty. Try again");
             }
         }
-        System.out.println("Enter the age of dragon");
+        System.out.println("Enter the age of dragon. The age of dragon must be long type and greater than 0");
         while (true) {
             try {
                 long dragonAgeCheck = scanner.nextLong();
@@ -216,7 +217,7 @@ public class DragonCollection {
         if (command.equals("add_if_max")) {
             dragonWeight = weightOrId;
         } else {
-            System.out.println("Enter the weight of dragon");
+            System.out.println("Enter the weight of dragon. The weight of dragon must be int type and greater than 0");
             while (true) {
                 try {
                     int dragonWeightCheck = scanner.nextInt();
@@ -285,14 +286,17 @@ public class DragonCollection {
      * Method saves the collection to a file
      */
     public void save() {
-        Writer writer = new Writer();
+        //Writer writer = new Writer();
         try {
+            Writer writer = new Writer();
             writer.clearFile();
             for (Dragon d: dragons) {
                 writer.writeFile(d);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println("No such file or directory");
         }
     }
 
@@ -312,7 +316,15 @@ public class DragonCollection {
         String line;
         boolean checkExit = true;
         try {
+            //String[] parametrs = new String[]{"",""};
+            //String task = sc.nextLine();
+            //parametrs = checkTask(task, parametrs);
+            //task = parametrs[0];
             while ((((line = bufferedReader.readLine()) != null)) && (checkExit)) {
+                String[] parametrs = new String[]{"",""};
+                //String task = sc.nextLine();
+                parametrs = checkTask(line, parametrs);
+                line = parametrs[0];
                 switch (line) {
                     case "help":
                         Laba.help();
@@ -322,45 +334,56 @@ public class DragonCollection {
                         break;
                     case "show":
                         show();
+                        if (collectionSize() == 0) {
+                            System.out.println("Collection is empty");
+                        }
                         break;
                     case "add":
                         add(sc, "add", 0);
                         break;
                     case "update":
-                        System.out.println("Enter the id to update the element");
-                        int updateId = 0;
-                        while (true) {
-                            try {
-                                updateId = sc.nextInt();
-                                if (checkIdForExistence(updateId)) {
-                                    removeById(updateId);
-                                    add(sc, "update", updateId);
-                                    break;
-                                } else {
-                                    System.out.println("There is no dragon with this id in the collection");
+                        if (collectionSize() > 0) {
+                            System.out.println("Enter the id to update the element. The id must be int type");
+                            int updateId = 0;
+                            while (true) {
+                                try {
+                                    updateId = sc.nextInt();
+                                    if (checkIdForExistence(updateId)) {
+                                        removeById(updateId);
+                                        add(sc, "update", updateId);
+                                        break;
+                                    } else {
+                                        System.out.println("There is no dragon with this id in the collection");
+                                        sc.nextLine();
+                                        break;
+                                    }
+                                } catch (InputMismatchException e) {
+                                    System.out.println("The id must be int type. Try again");
                                     sc.nextLine();
-                                    break;
                                 }
-                            } catch (InputMismatchException e) {
-                                System.out.println("The id must be int type. Try again");
-                                sc.nextLine();
                             }
+                        } else {
+                            System.out.println("Collection is empty");
                         }
                         break;
                     case "remove_by_id":
                         if (collectionSize() > 0) {
-                            System.out.println("Enter the id of dragon to remove this dragon");
+                            System.out.println("Enter the id of dragon. The id must be int type");
                             int id = 0;
                             while (true) {
                                 if (sc.hasNextInt()) {
                                     id = sc.nextInt();
                                     break;
                                 } else {
-                                    System.out.println("The id must be int type. try again");
+                                    System.out.println("The id must be int type. Try again");
                                     sc.nextLine();
                                 }
                             }
-                            removeById(id);
+                            if (checkIdForExistence(id)) {
+                                removeById(id);
+                            } else {
+                                System.out.println("There is no dragon with this id in the collection");
+                            }
                             sc.nextLine();
                         } else {
                             System.out.println("Collection is already empty");
@@ -373,7 +396,13 @@ public class DragonCollection {
                         save();
                         break;
                     case "execute_script":
-                        executeScript(fileName);
+                        try {
+                            executeScript(parametrs[1]);
+                        } catch (NullPointerException e) {
+                            System.out.println("You didn't write a file name in the script");
+                        } catch (StackOverflowError e) {
+                            System.out.println("The script execution went into recursion");
+                        }
                         break;
                     case "exit":
                         checkExit = false;
@@ -385,7 +414,7 @@ public class DragonCollection {
                         removeHead();
                         break;
                     case "add_if_max":
-                        System.out.println("Enter the weight to add the element");
+                        System.out.println("Enter the weight to add the element. The weight must be int type");
                         int addIfMaxWeight = 0;
                         while (true) {
                             try {
@@ -405,27 +434,39 @@ public class DragonCollection {
                         }
                         break;
                     case "sum_of_age":
-                        sumOfAge();
+                        if (collectionSize() > 0) {
+                            sumOfAge();
+                        } else {
+                            System.out.println("Collection is empty");
+                        }
                         break;
                     case "filter_contains_name":
-                        System.out.println("Please enter the name");
-                        String name = sc.nextLine();
-                        filterContainsName(name);
+                        if (collectionSize() > 0) {
+                            System.out.println("Please enter the name");
+                            String name = sc.nextLine();
+                            filterContainsName(name);
+                        } else {
+                            System.out.println("Collection is empty");
+                        }
                         break;
                     case "filter_less_than_age":
-                        System.out.println("Please enter the age");
-                        long age = 0;
-                        while (true) {
-                            if (sc.hasNextLong()) {
-                                age = sc.nextLong();
-                                break;
-                            } else {
-                                System.out.println("The age must be long type. try again");
-                                sc.nextLine();
+                        if (collectionSize() > 0) {
+                            System.out.println("Please enter the age. The age must be long type");
+                            long age = 0;
+                            while (true) {
+                                if (sc.hasNextLong()) {
+                                    age = sc.nextLong();
+                                    break;
+                                } else {
+                                    System.out.println("The age must be long type. try again");
+                                    sc.nextLine();
+                                }
                             }
+                            filterLessThanAge(age);
+                            sc.nextLine();
+                        } else {
+                            System.out.println("Collection is empty");
                         }
-                        filterLessThanAge(age);
-                        sc.nextLine();
                         break;
                     default:
                         System.out.println("Unknown command. Please try again");
@@ -536,5 +577,31 @@ public class DragonCollection {
             checkWeight = true;
         }
         return checkWeight;
+    }
+
+    /**
+     * Method finds a command from the list in the input line
+     * @param task
+     * @return parametrs[]
+     */
+    public String[] checkTask(String task, String[] parametrs) {
+        String[] command = task.split(" ");
+        for (int i = 0; i<command.length; i++) {
+            if ((command[i].equals("help")) || (command[i].equals("info")) || (command[i].equals("show")) || (command[i].equals("add")) || (command[i].equals("update")) || (command[i].equals("remove_by_id")) || (command[i].equals("clear")) || (command[i].equals("save")) || (command[i].equals("exit")) || (command[i].equals("head")) || (command[i].equals("remove_head")) || (command[i].equals("add_if_max")) || (command[i].equals("sum_of_age")) || (command[i].equals("filter_contains_name")) || (command[i].equals("filter_less_than_age"))) {
+                parametrs[0] = command[i];
+                break;
+            }
+            try {
+                if (command[i].equals("execute_script")) {
+                    parametrs[0] = command[i];
+                    parametrs[1] = command[i+1];
+                    break;
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("You didn't enter a file name");
+            }
+
+        }
+        return parametrs;
     }
 }

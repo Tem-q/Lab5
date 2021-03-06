@@ -7,6 +7,7 @@ import java.io.IOException;
  */
 public class Writer {
     File fileWay = new File(System.getenv("enV"));
+
     /**
      * Method writes the collection to a file
      * @param dragon
