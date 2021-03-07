@@ -15,22 +15,29 @@ public class Laba {
         DragonCollection dragonCollection = new DragonCollection();
 
         Reader reader = new Reader();
-        try {
+        while (true) {
             try {
-                reader.readFile(dragonCollection);
-            } catch (NullPointerException e) {
+                try {
+                    reader.readFile(dragonCollection);
+                    break;
+                } catch (NullPointerException e) {
+                    System.out.println("Enter the name of file");
+                    String fileName = scanner.nextLine();
+                    reader.setFileWay(fileName);
+                    reader.readFile(dragonCollection);
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
                 System.out.println("Enter the name of file");
                 String fileName = scanner.nextLine();
                 reader.setFileWay(fileName);
-                reader.readFile(dragonCollection);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            } catch (NoSuchElementException e) {
+                System.out.println("Unknown command");
             }
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (NoSuchElementException e) {
-            System.out.println("Unknown command");
         }
+
 
 
         System.out.println("Enter the command please");
