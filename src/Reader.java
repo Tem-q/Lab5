@@ -1,10 +1,11 @@
 import java.io.*;
+
 /**
  * Class for reading from a file
  */
 public class Reader {
-    File fileWay;
-    boolean checkEnvironmentVariable = true;
+    static File fileWay;
+    static boolean checkEnvironmentVariable = true;
 
     /**
      * Method sets the path to the file
@@ -23,6 +24,15 @@ public class Reader {
         if (checkEnvironmentVariable) {
             fileWay = new File(System.getenv("enV"));
         }
+        if (!fileWay.exists()) {
+            System.out.println("File doesn't exist");
+            throw new FileNotFoundException();
+        }
+        if (!fileWay.canWrite()) {
+            System.out.println("Permission denied");
+            throw new FileNotFoundException();
+        }
+
         BufferedReader bufferedReader = new BufferedReader(new FileReader(fileWay));
 
 
@@ -139,5 +149,41 @@ public class Reader {
             }
         }
         bufferedReader.close();
+    }
+
+    public void writeFile(Dragon dragon) throws IOException {
+        if (checkEnvironmentVariable) {
+            fileWay = new File(System.getenv("enV"));
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(fileWay, true);
+        String dradonInfo = dragon.getName() + ","
+                + dragon.getCoordinates().getX() + ","
+                + dragon.getCoordinates().getY() + ","
+                + dragon.getAge() + "," + dragon.getDescription() + ","
+                + dragon.getWeight() + ","
+                + dragon.getType() + ","
+                + dragon.getKiller().getName() + ","
+                + dragon.getKiller().getHeight() + ","
+                + dragon.getKiller().getWeight() + ","
+                + dragon.getKiller().getLocation().getX() + ","
+                + dragon.getKiller().getLocation().getY() + ","
+                + dragon.getKiller().getLocation().getZ() + ","
+                + dragon.getKiller().getLocation().getName() + "\n";
+        fileOutputStream.write(dradonInfo.getBytes());
+        fileOutputStream.close();
+    }
+
+    /**
+     * Method clears the file before writing
+     * @throws IOException
+     */
+    public void clearFile() throws IOException{
+        if (checkEnvironmentVariable) {
+            fileWay = new File(System.getenv("enV"));
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(fileWay, false);
+        String s = "";
+        fileOutputStream.write(s.getBytes());
+        fileOutputStream.close();
     }
 }

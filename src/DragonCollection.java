@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -287,10 +286,10 @@ public class DragonCollection {
      */
     public void save() {
         try {
-            Writer writer = new Writer();
-            writer.clearFile();
+            Reader reader = new Reader();
+            reader.clearFile();
             for (Dragon d: dragons) {
-                writer.writeFile(d);
+                reader.writeFile(d);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -595,6 +594,9 @@ public class DragonCollection {
                 }
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("You didn't enter a file name");
+            }
+            if (i==(command.length-1)) {
+                parametrs[0] = "";
             }
 
         }

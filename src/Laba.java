@@ -24,10 +24,8 @@ public class Laba {
                     System.out.println("Enter the name of file");
                     String fileName = scanner.nextLine();
                     reader.setFileWay(fileName);
-                    reader.readFile(dragonCollection);
                 }
             } catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
                 System.out.println("Enter the name of file");
                 String fileName = scanner.nextLine();
                 reader.setFileWay(fileName);
